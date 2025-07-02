@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard-TravelGo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2f7ff;
+        }
+        .navbar {
+            background-color: #004aad;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .navbar nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+        .navbar .logout {
+            background-color: #ff5252;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .dashboard-container {
+            padding: 30px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        .Welcome {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .booking-options {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .booking-options a {
+            flex: 1 1 22%;
+            margin: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .booking-options img {
+            width: 100%;
+            max-height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .booking-options a:hover {
+            transform: scale(1.05);
+        }
+        .bookings {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .bookings h3 {
+            margin-top: 0;
+            color: #004aad;
+            margin-bottom: 15px;
+        }
+        .booking-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cancel-btn {
+            background-color: #ff5252;
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cancel-btn:hover {
+            background-color: #e63e3e;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>TravelGo</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#">AboutUs</a>
+            <a href="#">ContactUs</a>
+            <a href="/logout" class="logout">Logout</a>
+        </nav>
+    </div>
+    <div class="dashboard-container">
+        <p class="Welcome">Welcome,<strong>{{name}}</strong></p>
+        <div class="booking-options">
+            <a href="/bus">
+                <img src="/static/images/bus-icon.jpg" alt="Bus">
+                <div style="margin-top:8px;font-weight:500;color:#004aad;">Bus</div>
+            </a>
+            <a href="/train">
+                <img src="/static/images/train-icon.jpeg" alt="Train">
+                <div style="margin-top:8px;font-weight:500;color:#004aad;">Train</div>
+            </a>
+            <a href="/flight">
+                <img src="/static/images/flight-icon.jpeg" alt="Flight">
+                <div style="margin-top:8px;font-weight:500;color:#004aad;">Flight</div>
+            </a>
+            <a href="/hostel">
+                <img src="/static/images/hotel.jpg" alt="Hotel">
+                <div style="margin-top:8px;font-weight:500;color:#004aad;">Hotel</div>
+            </a>
+        </div>
+        <div class="bookings">
+            <h3>YOUR BOOKINGS</h3>
+            {% if bookings %}
+                {% for b in bookings %}
+                <div class="booking-item">
+                    <strong>{{ b.type|capitalize }}</strong> - {{ b.details }} ({{ b.date }})
+                    <form method="POST" action="/cancel" style="display: inline;">
+                        <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
+                        <button type="submit" class="cancel-btn">Cancel</button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No Bookings Yet. Start Your journey by booking tickets!</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

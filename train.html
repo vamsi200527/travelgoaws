@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Train Booking - TravelGo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f8ff;
+            color: #333;
+        }
+
+        header {
+            background-color: #004aad;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 26px;
+            margin: 0;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: #ffdd57;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #004aad;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        select, input[type="date"], input[type="number"], input[type="text"] {
+            flex: 1 1 160px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .search-btn {
+            background-color: #004aad;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #00307c;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filters label {
+            background: #e6f0ff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sort-row {
+            margin-bottom: 20px;
+        }
+
+        .sort-row label {
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .train-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .train-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fbff;
+            border: 1px solid #dbe7ff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .train-card strong {
+            color: #004aad;
+            font-size: 17px;
+        }
+
+        .book-btn {
+            background: #00a36c;
+            color: white;
+            padding: 8px 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .book-btn:hover {
+            background: #008955;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .train-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .book-btn {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>TravelGo</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>🚆 Search & Book Trains</h2>
+
+    <div class="form-row">
+        <select id="source">
+            <option value="">From</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Vijayawada">Vijayawada</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Guntur">Guntur</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+        </select>
+
+        <select id="destination">
+            <option value="">To</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Vijayawada">Vijayawada</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Guntur">Guntur</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+        </select>
+
+        <input type="date" id="date" />
+        <input type="number" id="numPassengers" min="1" value="1" placeholder="No. of Passengers" />
+        <button id="search-btn" class="search-btn">Search</button>
+    </div>
+
+    <div class="filters">
+        <label><input type="checkbox" id="Express" /> Express</label>
+        <label><input type="checkbox" id="Superfast" /> Superfast</label>
+        <label><input type="checkbox" id="AC" /> AC</label>
+        <label><input type="checkbox" id="Sleeper" /> Sleeper</label>
+    </div>
+
+    <div class="sort-row">
+        <label for="sort">Sort by:</label>
+        <select id="sort" onchange="filterTrains()">
+            <option value="">None</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="departure-early">Departure: Early to Late</option>
+            <option value="departure-late">Departure: Late to Early</option>
+        </select>
+    </div>
+
+    <div id="train-list" class="train-list"></div>
+</div>
+
+<script>
+    const trains = [
+        { name: "Andhra Pradesh Express", trainNo: "12723", source: "Hyderabad", destination: "Vijayawada", departureTime: "06:00", arrivalTime: "12:00", type: "Superfast AC", price: 750 },
+        { name: "Charminar Express", trainNo: "12759", source: "Hyderabad", destination: "Vijayawada", departureTime: "18:30", arrivalTime: "00:30", type: "Express Sleeper", price: 300 },
+        { name: "Godavari Express", trainNo: "12727", source: "Vijayawada", destination: "Hyderabad", departureTime: "07:00", arrivalTime: "13:00", type: "Superfast AC", price: 700 },
+        { name: "Karnataka Express", trainNo: "12627", source: "Hyderabad", destination: "Bengaluru", departureTime: "20:00", arrivalTime: "07:00", type: "Superfast AC", price: 1200 },
+        { name: "Sanghamitra Express", trainNo: "12296", source: "Bengaluru", destination: "Hyderabad", departureTime: "16:00", arrivalTime: "04:00", type: "Express Sleeper", price: 650 },
+        { name: "Duronto Express", trainNo: "12219", source: "Hyderabad", destination: "Bengaluru", departureTime: "21:00", arrivalTime: "06:00", type: "Duronto AC", price: 1500 },
+        {"name": "Duronto Express", "train_number": "12285", "source": "Hyderabad", "destination": "Delhi", "departure_time": "07:00", "arrival_time": "05:00", "price": 1800},
+        {"name": "Mumbai Mail", "train_number": "12101", "source": "Hyderabad", "destination": "Mumbai", "departure_time": "18:00", "arrival_time": "09:00", "price": 1200},
+        {"name": "Gouthami Express", "train_number": "12737", "source": "Guntur", "destination": "Hyderabad", "departure_time": "20:00", "arrival_time": "06:00", "price": 600},
+        {"name": "Chennai Express", "train_number": "12839", "source": "Bengaluru", "destination": "Chennai", "departure_time": "10:30", "arrival_time": "17:30", "price": 750},
+    ];
+
+    function filterTrains() {
+        const source = document.getElementById("source").value;
+        const destination = document.getElementById("destination").value;
+        const date = document.getElementById("date").value;
+        const numPassengers = parseInt(document.getElementById("numPassengers").value);
+        const sort = document.getElementById("sort").value;
+        const list = document.getElementById("train-list");
+        list.innerHTML = "";
+
+        if (!source || !destination || !date || isNaN(numPassengers) || numPassengers < 1) {
+            list.innerHTML = "<p style='color: red; font-weight: bold;'>Please select Source, Destination, Date, and valid Number of Passengers to search.</p>";
+            return;
+        }
+
+        if (source === destination) {
+            list.innerHTML = "<p style='color: red; font-weight: bold;'>Source and destination cannot be the same.</p>";
+            return;
+        }
+
+        const filters = {
+            Express: document.getElementById("Express").checked,
+            Superfast: document.getElementById("Superfast").checked,
+            AC: document.getElementById("AC").checked,
+            Sleeper: document.getElementById("Sleeper").checked,
+        };
+
+        let filtered = trains.filter(t => {
+            const matchesRoute = (t.source === source && t.destination === destination) || (t.source === source && !destination) || (!source && t.destination === destination);
+            
+            const noFiltersSelected = !filters.Express && !filters.Superfast && !filters.AC && !filters.Sleeper;
+            
+            if (noFiltersSelected) {
+                return matchesRoute;
+            } else {
+                // Safely check t.type before calling includes, and default to empty string if undefined/null
+                const trainType = t.type || '';
+                const matchesFilter = 
+                    (filters.Express && trainType.includes("Express")) ||
+                    (filters.Superfast && trainType.includes("Superfast")) ||
+                    (filters.AC && trainType.includes("AC")) ||
+                    (filters.Sleeper && trainType.includes("Sleeper"));
+                return matchesRoute && matchesFilter;
+            }
+        });
+
+        if (sort === "price-low") {
+            filtered.sort((a, b) => a.price - b.price);
+        } else if (sort === "price-high") {
+            filtered.sort((a, b) => b.price - a.price);
+        } else if (sort === "departure-early") {
+            filtered.sort((a, b) => {
+                const [ah, am] = (a.departureTime || a.departure_time).split(':').map(Number);
+                const [bh, bm] = (b.departureTime || b.departure_time).split(':').map(Number);
+                return (ah * 60 + am) - (bh * 60 + bm);
+            });
+        } else if (sort === "departure-late") {
+            filtered.sort((a, b) => {
+                const [ah, am] = (a.departureTime || a.departure_time).split(':').map(Number);
+                const [bh, bm] = (b.departureTime || b.departure_time).split(':').map(Number);
+                return (bh * 60 + bm) - (ah * 60 + am);
+            });
+        }
+
+
+        if (filtered.length === 0) {
+            list.innerHTML = "<p>No trains found for this route and filters.</p>";
+            return;
+        }
+
+        filtered.forEach(train => {
+            const card = document.createElement("div");
+            card.className = "train-card";
+            card.innerHTML = `
+                <div>
+                    <strong>${train.name} (${train.trainNo || train.train_number})</strong><br>
+                    ${train.type || 'N/A Type'} • ${train.departureTime || train.departure_time} - ${train.arrivalTime || train.arrival_time} • ₹${(train.price * numPassengers).toFixed(2)}
+                </div>
+                <br>
+                <button class="book-btn" onclick="goToConfirmPage(
+                    '${encodeURIComponent(train.name)}', 
+                    '${encodeURIComponent(train.trainNo || train.train_number)}', 
+                    '${encodeURIComponent(train.source)}', 
+                    '${encodeURIComponent(train.destination)}', 
+                    '${encodeURIComponent(train.departureTime || train.departure_time)}', 
+                    '${encodeURIComponent(train.arrivalTime || train.arrival_time)}', 
+                    ${train.price}, 
+                    '${encodeURIComponent(date)}', 
+                    ${numPassengers}
+                )">
+                    Book
+                </button>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    // This function now creates and submits a POST form to the Flask endpoint
+    function goToConfirmPage(name, trainNumber, source, destination, departureTime, arrivalTime, price, date, persons) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/confirm_train_booking'; 
+
+        const fields = {name, trainNumber, source, destination, departureTime, arrivalTime, price, date, persons};
+        for (const key in fields) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = decodeURIComponent(fields[key]);
+            form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit(); // Submit the form
+    }
+
+    document.getElementById("search-btn").addEventListener("click", filterTrains);
+    document.getElementById("source").addEventListener("change", filterTrains);
+    document.getElementById("destination").addEventListener("change", filterTrains);
+    document.getElementById("date").addEventListener("change", filterTrains);
+    document.getElementById("numPassengers").addEventListener("change", filterTrains);
+    document.getElementById("Express").addEventListener("change", filterTrains);
+    document.getElementById("Superfast").addEventListener("change", filterTrains);
+    document.getElementById("AC").addEventListener("change", filterTrains);
+    document.getElementById("Sleeper").addEventListener("change", filterTrains);
+    document.getElementById("sort").addEventListener("change", filterTrains);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = today;
+    });
+</script>
+</body>
+</html>

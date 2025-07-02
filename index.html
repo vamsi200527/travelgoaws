@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGo - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        .glass h1 span {
+            text-shadow: 0 2px 8px rgba(168,85,247,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-400 min-h-screen flex items-center justify-center p-4">
+    <div class="glass p-10 max-w-md w-full text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-6 drop-shadow">Welcome to <span class="text-purple-600">TravelGo!</span></h1>
+        <p class="text-lg text-gray-700 mb-8">
+             
+        </p>
+        <div class="space-y-4">
+            <a href="{{ url_for('register') }}" class="block w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">
+                Register
+            </a>
+            <a href="{{ url_for('login') }}" class="block w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">
+                Login
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="block w-full py-3 px-6 bg-white/70 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</body>

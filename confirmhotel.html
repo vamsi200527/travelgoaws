@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Hotel Booking - TravelGo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f3f8ff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #004aad;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 26px;
+            margin: 0;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        header nav a:hover {
+            color: #ffdd57;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            flex-grow: 1;
+        }
+        h2 {
+            color: #004aad;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 28px;
+        }
+        .booking-summary {
+            background: #e6f0ff;
+            border: 1px solid #dbe7ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .booking-summary p {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .booking-summary p strong {
+            color: #004aad;
+        }
+        .booking-summary .total-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #008955;
+            border-top: 1px dashed #c1d6ff;
+            padding-top: 15px;
+            margin-top: 20px;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .confirm-btn, .cancel-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .confirm-btn {
+            background-color: #00a36c;
+            color: white;
+        }
+        .confirm-btn:hover {
+            background-color: #008955;
+            transform: translateY(-2px);
+        }
+        .cancel-btn {
+            background-color: #ff5252;
+            color: white;
+        }
+        .cancel-btn:hover {
+            background-color: #e63e3e;
+            transform: translateY(-2px);
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .success-message {
+            color: green;
+        }
+        .error-message {
+            color: red;
+        }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
+            header nav {
+                margin-top: 10px;
+            }
+            header nav a {
+                margin: 0 10px;
+            }
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            .actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .confirm-btn, .cancel-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TravelGo</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Confirm Your Hotel Booking</h2>
+        <div class="booking-summary">
+            <p>Hotel Name: <strong>{{ booking.hotel_name }}</strong></p>
+            <p>Location: <strong>{{ booking.location }}</strong></p>
+            <p>Check-in Date: <strong>{{ booking.check_in_date }}</strong></p>
+            <p>Check-out Date: <strong>{{ booking.check_out_date }}</strong></p>
+            <p>Number of Rooms: <strong>{{ booking.num_rooms }}</strong></p>
+            <p>Number of Guests: <strong>{{ booking.num_guests }}</strong></p>
+            <p>Price per Night: <strong>₹{{ booking.price_per_night }}</strong></p>
+            <p class="total-price">Total Price: <strong>₹{{ booking.total_price }}</strong></p>
+        </div>
+
+        <div id="booking-message" class="message" style="display: none;"></div>
+
+        <div class="actions">
+            <button class="confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+            <button class="cancel-btn" onclick="window.history.back()">Go Back</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmBooking() {
+            let url = '/final_confirm_hotel_booking'; 
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('booking-message');
+                messageDiv.style.display = 'block';
+                if (data.success) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.classList.remove('error-message');
+                    messageDiv.classList.add('success-message');
+                    // As per previous instruction, removed automatic redirection from client-side
+                } else {
+                    messageDiv.textContent = data.message;
+                    messageDiv.classList.remove('success-message');
+                    messageDiv.classList.add('error-message');
+                    if (data.redirect) { // Still handle redirect for errors or explicit backend redirects
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('booking-message');
+                messageDiv.style.display = 'block';
+                messageDiv.textContent = 'An unexpected error occurred during confirmation.';
+                messageDiv.classList.add('error-message');
+            });
+        }
+    </script>
+</body>
+</html>

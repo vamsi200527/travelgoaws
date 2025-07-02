@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGo - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-400 min-h-screen flex items-center justify-center p-4">
+    <div class="glass p-10 max-w-md w-full">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-6 text-center drop-shadow">Register for <span class="text-purple-600">TravelGo</span></h2>
+        {% if error %}
+        <div class="mb-4 text-red-600 text-sm text-center">{{ error }}</div>
+        {% endif %}
+        <form action="{{ url_for('register') }}" method="POST" class="space-y-6">
+            <div>
+                <label for="fullname" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 sm:text-sm bg-white/70 transition" placeholder="John Doe">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 sm:text-sm bg-white/70 transition" placeholder="you@example.com">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 sm:text-sm bg-white/70 transition" placeholder="••••••••">
+            </div>
+            <div>
+                <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required class="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-400 focus:border-purple-400 sm:text-sm bg-white/70 transition" placeholder="••••••••">
+            </div>
+            <div>
+                <button type="submit" class="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 transition duration-300 ease-in-out transform hover:scale-105">Register</button>
+            </div>
+        </form>
+        <p class="mt-6 text-center text-gray-700 text-sm">Already have an account? <a href="{{ url_for('login') }}" class="text-purple-600 hover:underline">Log in here!</a></p>
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('index') }}" class="text-blue-600 hover:underline text-sm">Back to Home</a>
+        </div>
+    </div>
