@@ -28,7 +28,7 @@ A simple Flask web application with MongoDB integration for user registration.
    python app.py
    ```
    
-   The app will be available at [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+   The app will be available at [http://127.0.0.1:5000/](http://172.31.16.68:5000/)
 
 ## Project Structure
 
@@ -40,3 +40,8 @@ A simple Flask web application with MongoDB integration for user registration.
 ---
 
 **Note:** This project is for educational/demo purposes. Passwords are stored in plain text for simplicity—never do this in production! Always hash passwords and use secure authentication.
+
+
+
+
+https://drive.google.com/file/d/1Z9MRyMeIDEwhBhAMrj3wTynoA2GZgeCY/view?usp=drivesdk
