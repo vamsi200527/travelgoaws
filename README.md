@@ -28,7 +28,7 @@ A simple Flask web application with MongoDB integration for user registration.
    python app.py
    ```
    
-   The app will be available at [http://127.0.0.1:5000/](http://172.31.16.68:5000/)
+   The app will be available at [http://172.31.16.68:5000/](http://172.31.16.68:5000/)
 
 ## Project Structure
 
